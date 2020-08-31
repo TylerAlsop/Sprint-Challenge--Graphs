@@ -11,11 +11,11 @@ from ast import literal_eval
 world = World()
 
 # You may uncomment the smaller graphs for development and testing purposes.
-map_file = "maps/test_line.txt"
+# map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -30,8 +30,10 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
-############################### MY CODE ###############################
-def bfs(self, starting_vertex, destination_vertex):
+################################ MY CODE ################################
+############################### Functions ###############################
+
+def bfs(self, starting_vertex):
     queue = Queue()
     visited_vertices = set()
 
@@ -47,10 +49,14 @@ def bfs(self, starting_vertex, destination_vertex):
 
         if current_vertex not in visited_vertices:
 
-            if current_vertex == destination_vertex:
-                return current_path
+            # if current_vertex == destination_vertex:
+            #     return current_path
 
             visited_vertices.add(current_vertex)
+
+            # Find the neighboring rooms of the current room and add them to the queue
+
+            # If any of the neighboring rooms has an exit direction of '?' then return that path / add it to the traversal path / move to that room and do another dft.
 
             for neighbor_vertex in self.get_neighbors(current_vertex):
                 new_path = list(current_path)
@@ -113,6 +119,49 @@ def dft(self, starting_vertex):
             # If the new room is not in the visited rooms then repeat.
             # If you reach a room that does not have a '?' in any direction then do a breadth first search to find a path that reaches a direction with a '?'. Then add that path to the queue and move there and perform another dft.
 
+############################### Code That Just Runs ###############################
+swapped_directions = {"n":"s", "s": "n", "e": "w", "w":"e"}
+
+previous_directions = []
+
+rooms_i_visited = {}
+
+rooms_i_visited[player.current_room.id] = player.current_room.get_exits()
+print("Rooms_i_visited: ", rooms_i_visited)
+
+initial_room = player.current_room.id
+exits = player.current_room.get_exits()
+
+previous_room = None
+
+print("exits:", exits)
+
+
+while len(rooms_i_visited) < len(world.rooms):
+    if player.current_room.id not in rooms_i_visited:
+        rooms_i_visited[player.current_room.id] = player.current_room.get_exits()
+        last_direction_traversed = previous_directions[-1]
+        rooms_i_visited[player.current_room.id].remove(last_direction_traversed)
+
+    while len(rooms_i_visited[player.current_room.id]) < 1:
+        last_direction_traversed = previous_directions.pop()
+        traversal_path.append(last_direction_traversed)
+        player.travel(last_direction_traversed)
+    
+    direction_to_exit = rooms_i_visited[player.current_room.id].pop(0)
+    traversal_path.append(direction_to_exit)
+    previous_directions.append(swapped_directions[direction_to_exit])
+    
+    player.travel(direction_to_exit)
+
+    if (len(world.rooms) - len(rooms_i_visited)) == 1:
+        rooms_i_visited[player.current_room.id] = player.current_room.get_exits()
+        
+
+
+
+
+
 ############################### END OF MY CODE ###############################
 
 
@@ -151,6 +200,8 @@ else:
 #         break
 #     else:
 #         print("I did not understand that command.")
+
+
 
 
 
