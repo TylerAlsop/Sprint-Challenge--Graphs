@@ -122,7 +122,7 @@ def dft(self, starting_vertex):
 ############################### Code That Just Runs ###############################
 swapped_directions = {"n":"s", "s": "n", "e": "w", "w":"e"}
 
-previous_directions = []
+return_directions = []
 
 rooms_i_visited = {}
 
@@ -140,17 +140,17 @@ print("exits:", exits)
 while len(rooms_i_visited) < len(world.rooms):
     if player.current_room.id not in rooms_i_visited:
         rooms_i_visited[player.current_room.id] = player.current_room.get_exits()
-        last_direction_traversed = previous_directions[-1]
+        last_direction_traversed = return_directions[-1]
         rooms_i_visited[player.current_room.id].remove(last_direction_traversed)
 
     while len(rooms_i_visited[player.current_room.id]) < 1:
-        last_direction_traversed = previous_directions.pop()
+        last_direction_traversed = return_directions.pop()
         traversal_path.append(last_direction_traversed)
         player.travel(last_direction_traversed)
     
     direction_to_exit = rooms_i_visited[player.current_room.id].pop(0)
     traversal_path.append(direction_to_exit)
-    previous_directions.append(swapped_directions[direction_to_exit])
+    return_directions.append(swapped_directions[direction_to_exit])
     
     player.travel(direction_to_exit)
 
