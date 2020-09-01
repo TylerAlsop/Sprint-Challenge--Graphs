@@ -159,9 +159,6 @@ while len(rooms_i_visited) < len(world.rooms):
         
 
 
-
-
-
 ############################### END OF MY CODE ###############################
 
 
