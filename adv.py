@@ -140,13 +140,13 @@ print("exits:", exits)
 while len(rooms_i_visited) < len(world.rooms):
     if player.current_room.id not in rooms_i_visited:
         rooms_i_visited[player.current_room.id] = player.current_room.get_exits()
-        last_direction_traversed = return_directions[-1]
-        rooms_i_visited[player.current_room.id].remove(last_direction_traversed)
+        just_came_from_direction = return_directions[-1]
+        rooms_i_visited[player.current_room.id].remove(just_came_from_direction)
 
     while len(rooms_i_visited[player.current_room.id]) < 1:
-        last_direction_traversed = return_directions.pop()
-        traversal_path.append(last_direction_traversed)
-        player.travel(last_direction_traversed)
+        just_came_from_direction = return_directions.pop()
+        traversal_path.append(just_came_from_direction)
+        player.travel(just_came_from_direction)
     
     direction_to_exit = rooms_i_visited[player.current_room.id].pop(0)
     traversal_path.append(direction_to_exit)
